@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://thetechmarketer.com/wp-content/uploads/2024/05/14979246_SL_060521_43530_02.jpg'); /* Change 'background.jpg' to the path of your image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Box shadow for container */
+            width: 400px;
+            text-align: center;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.75);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Box shadow for sidebar */
+            padding: 20px;
+            overflow-y: auto; /* Enable vertical scrolling */
+            z-index: 1; /* Ensure sidebar stays above other content */
+        }
+
+        .main-content {
+            margin-left: 220px; /* Adjusted to accommodate sidebar */
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333; /* Dark text color */
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #555; /* Darker label color */
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            width: calc(100% - 18px); /* Adjusted to accommodate padding */
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: 0.5px solid #ccc;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #333; /* Dark text color */
+        }
+
+        #employee-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        #employee-list li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        /* Animation */
+        @keyframes fadein {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Apply animations */
+        .fadein {
+            animation: fadein 0.5s ease-out;
+        }
+        .button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  background-color: #4CAF50; /* Green background color */
+  color: #fff; /* White text color */
+  text-decoration: none; /* Remove underline from link */
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease; /* Add a smooth transition when hovering over the link */
+}
+
+.button:hover {
+  background-color: #3e8e41; /* Darker green background color on hover */
+}
+    </style>
+</head>
+<body>
+    <div class="sidebar fadein">
+        <h2>Employee List</h2>
+        <ul id="employee-list">
+            <!-- Registered employees will be displayed here -->
+        </ul>
+    </div>
+
+    <div class="container fadein main-content">
+        <h1>HR Dashboard</h1>
+        <label for="employee-name">Employee Name:</label>
+        <input type="text" id="employee-name">
+        <label for="employee-id">Employee ID:</label>
+        <input type="text" id="employee-id">
+        <label for="employee-salary">Salary:</label>
+        <input type="text" id="employee-salary">
+        <label for="joining-date">Joining Date:</label>
+        <input type="date" id="joining-date">
+        <button onclick="registerEmployee()">Register Employee</button><br> 
+        <a href="https://wavegendynamics.online/" class="button">Home</a>
+    </div>
+         
+    <script>
+    // Function to authenticate user
+        function authenticateUser() {
+            var username = prompt("Enter your username:");
+            var password = prompt("Enter your password:");
+
+            // Check if username and password match
+            if (username === 'avanti' && password === '2024') {
+                // Allow access to the page
+                return true;
+            } else {
+                // Deny access and show message
+                alert("Invalid username or password. Access denied.");
+                return false;
+            }
+        }
+
+        // Function to handle access to the page
+        function handleAccess() {
+            // Check if user is authenticated
+            if (!authenticateUser()) {
+                // If not authenticated, redirect to home page
+                window.location.href = "index.html";
+            }
+        }
+
+        // Call handleAccess function when the page loads
+        handleAccess();
+        // Load stored employees on page load
+        window.addEventListener('load', function() {
+            loadEmployees();
+        });
+
+        function registerEmployee() {
+            const employeeName = document.getElementById('employee-name').value;
+            const employeeId = document.getElementById('employee-id').value;
+            const salary = document.getElementById('employee-salary').value;
+            const joiningDate = document.getElementById('joining-date').value;
+
+            if (!employeeName || !employeeId || !salary || !joiningDate) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            const employee = {
+                name: employeeName,
+                id: employeeId,
+                salary: salary,
+                joiningDate: joiningDate
+            };
+
+            // Save the employee to localStorage
+            saveEmployee(employee);
+
+            // Update the employee list
+            updateEmployeeList(employee);
+
+            // Clear input fields
+            clearInputFields();
+        }
+
+        function saveEmployee(employee) {
+            let employees = JSON.parse(localStorage.getItem('employees')) || [];
+            employees.push(employee);
+            localStorage.setItem('employees', JSON.stringify(employees));
+        }
+
+        function loadEmployees() {
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            employees.forEach(employee => {
+                updateEmployeeList(employee);
+            });
+        }
+
+        function updateEmployeeList(employee) {
+            const employeeList = document.getElementById('employee-list');
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <strong>${employee.name}</strong><br>
+                Employee ID: ${employee.id}<br>
+                Salary: ${employee.salary}<br>
+                Joining Date: ${employee.joiningDate}<br>
+                <button onclick="openEmployeeDashboard('${employee.name}')">Dashboard</button>
+            `;
+            employeeList.appendChild(listItem);
+        }
+
+        function clearInputFields() {
+            document.getElementById('employee-name').value = '';
+            document.getElementById('employee-id').value = '';
+            document.getElementById('employee-salary').value = '';
+            document.getElementById('joining-date').value = '';
+        }
+
+        function openEmployeeDashboard(employeeName) {
+            const employee = JSON.parse(localStorage.getItem('employees')).find(emp => emp.name === employeeName);
+            if (employee) {
+                const dashboardContent = `
+                   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agents Dashboard</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://thetechmarketer.com/wp-content/uploads/2024/05/14979246_SL_060521_43530_02.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .agent {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .agent img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            float: left;
+            margin-right: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .agent:hover img {
+            transform: scale(1.1);
+        }
+
+        .agent-details {
+            float: left;
+        }
+
+        .agent-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .agent-id {
+            color: #777;
+        }
+
+        .break {
+            margin-bottom: 10px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 20px 8px;
+            margin: 10 50px; /* Adjusted margin */
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-container .button:nth-child(2) {
+            margin-left: 20px; /* Added space between the buttons */
+        }
+
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        /* Clear floats after the columns */
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>${employee.name} Dashboard</h1>
+        
+        <div class="agent" id="agent1">
+            <img src="agent1.jpg" alt="Agent 1" id="agent1-photo">
+            <div class="agent-details">
+                <div class="agent-name">${employee.name}</div>
+                <div class="agent-id">Employee ID:${employee.id}</div>
+                <div class="agent-campaign">Campaign: <span id="agent1-campaign"></span></div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="column">
+                <div class="break">Break 1</div>
+                <div class="button-container">
+                    <a href="https://docs.google.com/spreadsheets/d/1FMQOIe98DtvpwlYGe8c5FVGgnMe10SCyLbWI6r3Smi0/edit?usp=sharing" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </div>
+            </div>
+            <div class="column">
+                <div class="break">Break 2</div>
+                <div class="button-container">
+                    <a href="https://docs.google.com/spreadsheets/d/1FMQOIe98DtvpwlYGe8c5FVGgnMe10SCyLbWI6r3Smi0/edit?usp=sharing" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </div>
+            </div>
+            <div class="column">
+                <div class="break">Break 3</div>
+                <div class="button-container">
+                    <a href="https://docs.google.com/spreadsheets/d/1FMQOIe98DtvpwlYGe8c5FVGgnMe10SCyLbWI6r3Smi0/edit?usp=sharing" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <input type="file" accept="image/*" id="profile-image" style="display: none;">
+            <button onclick="document.getElementById('profile-image').click();">Change Profile Photo</button>
+            <select id="campaign-dropdown">
+                <!-- Campaigns will be loaded dynamically from CRM1.html -->
+            </select>
+            <button onclick="assignCampaign('agent1')">Assign Campaign</button>
+        </div>
+    </div>
+
+    <script>
+        // Load campaign data from CRM1.html and populate the dropdown
+        window.addEventListener("load", function() {
+            var storedData = localStorage.getItem("campaignData");
+            var dataArray = storedData ? JSON.parse(storedData) : [];
+            var dropdown = document.getElementById("campaign-dropdown");
+            // Populate the dropdown with campaign names
+            dataArray.forEach(function(data) {
+                var option = document.createElement("option");
+                option.text = data.campaignName;
+                option.value = data.campaignName;
+                dropdown.add(option);
+            });
+        });
+
+        // Function to assign campaign to agent
+        function assignCampaign(agentId) {
+            var dropdown = document.getElementById("campaign-dropdown");
+            var selectedCampaign = dropdown.value;
+            document.getElementById(agentId + "-campaign").innerText = selectedCampaign;
+        }
+
+        // Function to handle profile photo change
+        document.getElementById("profile-image").addEventListener("change", function(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById("agent1-photo");
+                    img.src = e.target.result;
+                    // Save the image source to local storage
+                    localStorage.setItem("agent1Photo", e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Load the saved profile photo from local storage
+        var savedPhoto = localStorage.getItem("agent1Photo");
+        if (savedPhoto) {
+            document.getElementById("agent1-photo").src = savedPhoto;
+        }
+    
+
+                `;
+
+                // Create a blob from the HTML content
+                const blob = new Blob([dashboardContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+
+                // Create a link element to trigger the download
+                const a = document.createElement('a');
+                a.href = url;
+                a.Preview = `${employee.name}_Dashboard.html`;
+                a.click();
+
+                // Release the URL object
+                URL.revokeObjectURL(url);
+            } else {
+                alert('Employee not found.');
+            }
+        }
+    </script>
+</body>
+</html>

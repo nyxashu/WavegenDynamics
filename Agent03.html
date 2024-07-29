@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agents Dashboard</title>
+    <style>
+        body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://thetechmarketer.com/wp-content/uploads/2024/05/14979246_SL_060521_43530_02.jpg'); /* Replace 'path_to_your_image.jpg' with the actual path to your image */
+    background-size: cover; /* Ensure the background image covers the entire body */
+    background-repeat: no-repeat; /* Prevent the background image from repeating */
+}
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .agent {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .agent img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            float: left;
+            margin-right: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .agent:hover img {
+            transform: scale(1.1);
+        }
+
+        .agent-details {
+            float: left;
+        }
+
+        .agent-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .agent-id {
+            color: #777;
+        }
+
+        .break {
+            margin-bottom: 10px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-container .button:nth-child(2) {
+            margin-left: 20px; /* Added space between the buttons */
+        }
+
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        /* Clear floats after the columns */
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Agents Dashboard</h1>
+        
+        <div class="agent" id="agent1">
+            <img src="agent1.jpg" alt="Agent 1" id="agent1-photo">
+            <div class="agent-details">
+                <div class="agent-name">Samia</div>
+                <div class="agent-id">Employee ID: 12345</div>
+                <div class="agent-campaign">Campaign: <span id="agent1-campaign"></span></div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="column">
+                <div class="break">Break 1</div>
+                <div class="button-container">
+                    <a href="#" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </div>
+            </div>
+            <div class="column">
+                <div class="break">Break 2</div>
+                <div class="button-container">
+                    <a href="#" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </div>
+            </div>
+            <div class="column">
+                <div class="break">Break 3</div>
+                <div class="button-container">
+                    <a href="#" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <input type="file" accept="image/*" id="profile-image" style="display: none;">
+            <button onclick="document.getElementById('profile-image').click();">Change Profile Photo</button>
+            <select id="campaign-dropdown">
+                <!-- Campaigns will be loaded dynamically from CRM1.html -->
+            </select>
+            <button onclick="assignCampaign('agent1')">Assign Campaign</button>
+        </div>
+    </div>
+
+    <script>
+        // Load campaign data from CRM1.html and populate the dropdown
+        window.addEventListener("load", function() {
+            var storedData = localStorage.getItem("campaignData");
+            var dataArray = storedData ? JSON.parse(storedData) : [];
+            var dropdown = document.getElementById("campaign-dropdown");
+            // Populate the dropdown with campaign names
+            dataArray.forEach(function(data) {
+                var option = document.createElement("option");
+                option.text = data.campaignName;
+                option.value = data.campaignName;
+                dropdown.add(option);
+            });
+        });
+
+        // Function to assign campaign to agent
+        function assignCampaign(agentId) {
+            var dropdown = document.getElementById("campaign-dropdown");
+            var selectedCampaign = dropdown.value;
+            document.getElementById(agentId + "-campaign").innerText = selectedCampaign;
+        }
+
+        // Function to handle profile photo change
+        document.getElementById("profile-image").addEventListener("change", function(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById("agent1-photo");
+                    img.src = e.target.result;
+                    // Save the image source to local storage
+                    localStorage.setItem("agent1Photo", e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Load the saved profile photo from local storage
+        var savedPhoto = localStorage.getItem("agent1Photo");
+        if (savedPhoto) {
+            document.getElementById("agent1-photo").src = savedPhoto;
+        }
+    </script>
+</body>
+</html>
+    

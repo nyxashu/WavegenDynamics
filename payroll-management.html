@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Management</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap' rel='stylesheet'>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    background: url('https://thetechmarketer.com/wp-content/uploads/2024/05/bkg202.jpg') no-repeat;
+    background-size: cover;
+    background-position: center;
+    transition: background 0.3s ease, color 0.3s ease;
+    color: #000;
+}
+
+.dark-mode body {
+    background: url('https://thetechmarketer.com/wp-content/uploads/2024/05/dark-bg.jpg') no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+}
+
+nav {
+    background-color: #FAD02C;
+    color: white;
+    padding: 10px 0;
+    width: 100%;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+nav ul li {
+    margin: 5px 10px;
+}
+
+.dashboard-button {
+    color: white;
+    background-color: #FAD02C;
+    border: 0px solid white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.dashboard-button:hover {
+    background-color: #38B6FF;
+    color: white;
+    transform: translateY(-3px);
+}
+
+.dashboard-button:active {
+    transform: translateY(0);
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    margin: 20px 0;
+    transition: background 0.3s ease, color 0.3s ease;
+    color: inherit; /* Inherit text color from body */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.dark-mode .container {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+}
+
+.container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    width: 48%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: inherit; /* Inherit text color from container */
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background: #fff;
+    color: #000;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #007BFF;
+}
+
+.dark-mode .form-group input, .dark-mode .form-group select {
+    border-color: #555;
+    background: #333;
+    color: #fff;
+}
+
+.dark-mode .form-group input:focus, .dark-mode .form-group select:focus {
+    border-color: #38B6FF;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+    transition: background 0.3s ease;
+    margin-top: 15px;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+.dark-mode .btn {
+    background: #38B6FF;
+}
+
+.dark-mode .btn:hover {
+    background: #007BFF;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: inherit; /* Inherit text color from container */
+}
+
+.table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background: #007BFF;
+    color: #fff;
+}
+
+.dark-mode th {
+    background: #38B6FF;
+}
+
+.toggle-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: inherit; /* Inherit text color from body */
+}
+
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #38B6FF;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.toggle-text {
+    margin-left: 10px;
+    font-size: 16px;
+    color: inherit; /* Inherit text color from toggle-container */
+}
+
+.widget {
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, color 0.3s ease;
+    text-align: center;
+    width: calc(30% - 20px); /* Adjust width as needed */
+}
+
+.dark-mode .widget {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+}
+
+.widget h2 {
+    margin-bottom: 10px;
+}
+
+
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="dynamichr.html" class="dashboard-button">Dashboard</a></li>
+            <li><a href="employee-directory.html" class="dashboard-button">Employee Directory</a></li>
+            <li><a href="leave-tracker.html" class="dashboard-button">Leave Tracker</a></li>
+            <li><a href="payroll-management.html" class="dashboard-button">Payroll Management</a></li>
+            <li><a href="attendance-management.html" class="dashboard-button">Attendance Management</a></li>
+        </ul>
+    </nav>
+
+    <div class="toggle-container">
+        <label class="toggle">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider"></span>
+        </label>
+        <span class="toggle-text">Space Mode</span>
+    </div>
+
+    <div class="container">
+        <h1>Payroll Management</h1>
+
+        <div>
+            <h2>Salary Details</h2>
+            <form id="salaryForm">
+                <div class="form-group">
+                    <label for="employeeName">Employee Name</label>
+                    <input type="text" id="employeeName" required>
+                </div>
+                <div class="form-group">
+                    <label for="basicSalary">Basic Salary</label>
+                    <input type="number" id="basicSalary" required>
+                </div>
+                <div class="form-group">
+                    <label for="allowances">Allowances</label>
+                    <input type="number" id="allowances" required>
+                </div>
+                <div class="form-group">
+                    <label for="deductions">Deductions</label>
+                    <input type="number" id="deductions" required>
+                </div>
+                <button type="submit" class="btn">Submit</button>
+            </form>
+            <table id="salaryTable">
+                <thead>
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Basic Salary</th>
+                        <th>Allowances</th>
+                        <th>Deductions</th>
+                        <th>Net Salary</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+       <div>
+           <li><a href="https://wavegendynamics.online/payslip-manager.html" class="dashboard-button">Employee Performance Generator</a></li>
+         
+       </div>
+       
+        <!-- Additional Widgets -->
+        <div class="widget">
+            <li><a href="https://wavegendynamics.online/payslip-generator.html" class="dashboard-button">Payslip Generator</a></li>
+        </div>
+
+        <div class="widget">
+            <h2>Average Salary</h2>
+            <p id="averageSalary">0</p>
+        </div>
+
+        <div class="widget">
+            <h2>Top Earners</h2>
+            <ul id="topEarners"></ul>
+        </div>
+
+        <div class="widget">
+            <h2>Pay Raise Eligibility</h2>
+            <ul id="payRaiseEligibility"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        darkModeToggle.addEventListener('change', function () {
+            if (darkModeToggle.checked) {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        });
+
+        // Salary Details
+        const salaryForm = document.getElementById('salaryForm');
+        const salaryTableBody = document.querySelector('#salaryTable tbody');
+        const totalPayrollCost = document.getElementById('totalPayrollCost');
+        const averageSalary = document.getElementById('averageSalary');
+        const topEarners = document.getElementById('topEarners');
+        const payRaiseEligibility = document.getElementById('payRaiseEligibility');
+        let salaryData = [];
+
+        // Function to load salary data from local storage
+        function loadSalaryData() {
+            const salaryDataString = localStorage.getItem('salaryData');
+            if (salaryDataString) {
+                salaryData = JSON.parse(salaryDataString);
+                renderSalaryTable();
+                calculatePayrollStatistics();
+            }
+        }
+
+        // Function to save salary data to local storage
+        function saveSalaryData() {
+            localStorage.setItem('salaryData', JSON.stringify(salaryData));
+        }
+
+        // Function to render table with salary data
+        function renderSalaryTable() {
+            salaryTableBody.innerHTML = '';
+            salaryData.forEach(function (salary, index) {
+                const netSalary = salary.basicSalary + salary.allowances - salary.deductions;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${salary.employeeName}</td>
+                    <td>${salary.basicSalary}</td>
+                    <td>${salary.allowances}</td>
+                    <td>${salary.deductions}</td>
+                    <td>${netSalary}</td>
+                    <td><button onclick="deleteSalaryEvent(${index})">Delete</button></td>
+                `;
+                salaryTableBody.appendChild(row);
+            });
+        }
+
+        // Function to calculate payroll statistics
+        function calculatePayrollStatistics() {
+            const totalCost = salaryData.reduce((acc, salary) => acc + (salary.basicSalary + salary.allowances - salary.deductions), 0);
+            totalPayrollCost.textContent = totalCost;
+
+            const average = totalCost / salaryData.length || 0;
+            averageSalary.textContent = average.toFixed(2);
+
+            // Top earners
+            const sortedByEarnings = [...salaryData].sort((a, b) => (b.basicSalary + b.allowances - b.deductions) - (a.basicSalary + a.allowances - a.deductions));
+            topEarners.innerHTML = sortedByEarnings.slice(0, 5).map(salary => `<li>${salary.employeeName}: ${salary.basicSalary + salary.allowances - salary.deductions}</li>`).join('');
+
+            // Pay raise eligibility
+            payRaiseEligibility.innerHTML = salaryData.filter(salary => salary.basicSalary < 50000).map(salary => `<li>${salary.employeeName}</li>`).join('');
+        }
+
+        // Function to handle form submission
+        salaryForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const employeeName = document.getElementById('employeeName').value;
+            const basicSalary = parseFloat(document.getElementById('basicSalary').value);
+            const allowances = parseFloat(document.getElementById('allowances').value);
+            const deductions = parseFloat(document.getElementById('deductions').value);
+
+            salaryData.push({ employeeName, basicSalary, allowances, deductions });
+            renderSalaryTable();
+            calculatePayrollStatistics();
+            saveSalaryData();
+        });
+
+        // Function to delete salary event
+        function deleteSalaryEvent(index) {
+            salaryData.splice(index, 1);
+            renderSalaryTable();
+            calculatePayrollStatistics();
+            saveSalaryData();
+        }
+
+        // Function to generate salary slip
+        function generateSalarySlip() {
+            const slipEmployeeName = document.getElementById('slipEmployeeName').value;
+            const salary = salaryData.find(s => s.employeeName === slipEmployeeName);
+            if (salary) {
+                const netSalary = salary.basicSalary + salary.allowances - salary.deductions;
+                document.getElementById('salarySlipOutput').innerHTML = `
+                    <h3>Salary Slip</h3>
+                    <p>Employee Name: ${salary.employeeName}</p>
+                    <p>Basic Salary: ${salary.basicSalary}</p>
+                    <p>Allowances: ${salary.allowances}</p>
+                    <p>Deductions: ${salary.deductions}</p>
+                    <p>Net Salary: ${netSalary}</p>
+                `;
+            } else {
+                document.getElementById('salarySlipOutput').innerHTML = '<p>Employee not found.</p>';
+            }
+        }
+
+        // Load salary data when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSalaryData();
+        });
+    </script>
+</body>
+</html>

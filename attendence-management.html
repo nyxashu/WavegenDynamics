@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Management</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap' rel='stylesheet'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      background: url('https://thetechmarketer.com/wp-content/uploads/2024/05/bkg202.jpg') no-repeat;
+      background-size: cover;
+      background-position: center;
+      transition: background 0.3s ease, color 0.3s ease;
+      color: #000;
+    }
+    .dark-mode body {
+      background: url('https://thetechmarketer.com/wp-content/uploads/2024/05/dark-bg.jpg') no-repeat;
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+    }
+    nav {
+      background-color: #FAD02C;
+      color: white;
+      padding: 10px 0;
+      width: 100%;
+      text-align: center;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    nav ul li {
+      margin: 5px 10px;
+    }
+    .dashboard-button {
+      color: white;
+      background-color: #FAD02C;
+      border: 0px solid white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s, transform 0.3s;
+    }
+    .dashboard-button:hover {
+      background-color: #38B6FF;
+      color: white;
+      transform: translateY(-3px);
+    }
+    .dashboard-button:active {
+      transform: translateY(0);
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      margin: 20px 0;
+      transition: background 0.3s ease, color 0.3s ease;
+      color: inherit; /* Inherit text color from body */
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .dark-mode .container {
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+    }
+    .container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 500;
+      width: 100%;
+    }
+    .form-group {
+      margin-bottom: 15px;
+      width: 48%;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: inherit; /* Inherit text color from container */
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      background: #fff;
+      color: #000;
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #007BFF;
+    }
+    .dark-mode .form-group input, .dark-mode .form-group select {
+      border-color: #555;
+      background: #333;
+      color: #fff;
+    }
+    .dark-mode .form-group input:focus, .dark-mode .form-group select:focus {
+      border-color: #38B6FF;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 16px;
+      transition: background 0.3s ease, transform 0.3s ease;
+      margin-top: 15px;
+    }
+    .btn:hover {
+      background: #0056b3;
+      transform: translateY(-3px);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    .dark-mode .btn {
+      background: #38B6FF;
+    }
+    .dark-mode .btn:hover {
+      background: #007BFF;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      color: inherit; /* Inherit text color from container */
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #007BFF;
+      color: #fff;
+    }
+    .dark-mode th {
+      background: #38B6FF;
+    }
+    .toggle-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: inherit; /* Inherit text color from body */
+    }
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #38B6FF;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    .toggle-text {
+      margin-left: 10px;
+      font-size: 16px;
+      color: inherit; /* Inherit text color from toggle-container */
+    }
+    .widget {
+      margin: 20px 0;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease, color 0.3s ease;
+      text-align: center;
+      width: calc(30% - 20px); /* Adjust width as needed */
+    }
+    .dark-mode .widget {
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+    }
+    .widget h2 {
+      margin-bottom: 10px;
+    }
+    .widget p {
+      margin-bottom: 5px;
+    }
+    .attendance-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .attendance-buttons button {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #007BFF;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .attendance-buttons button:hover {
+      background: #0056b3;
+      transform: translateY(-3px);
+    }
+    .attendance-buttons button:active {
+      transform: translateY(0);
+    }
+    .break-timings input {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    .delete-btn {
+      padding: 5px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #DC3545;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .delete-btn:hover {
+      background: #C82333;
+      transform: translateY(-3px);
+    }
+    .delete-btn:active {
+      transform: translateY(0);
+    }
+    .DIY {
+  background: #0056b3;
+  color: #fff;
+  margin-top: 10px;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.DIY i {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.DIY:hover {
+  background: #0056b3;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.DIY:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.DIY:hover i {
+  transform: translateX(5px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.DIY {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+            <a href="https://wavegendynamics.online/dynamichr.html" class="dashboard-button">Dashboard</a>
+            <a href="https://wavegendynamics.online/employee_directory.html" class="dashboard-button">Employee Directory</a>
+            <a href="https://wavegendynamics.online/leave-tracker.html" class="dashboard-button">Leave Tracker</a>
+            <a href="https://wavegendynamics.online/payroll-management.html" class="dashboard-button">Payroll Management</a>
+            <a href="https://wavegendynamics.online/attendence-management.html" class="dashboard-button">Attendence Management</a>
+        </ul>
+  </nav>
+  <div class="toggle-container">
+    <label class="toggle">
+      <input type="checkbox" id="modeToggle">
+      <span class="slider"></span>
+    </label>
+    <span class="toggle-text">Dark Mode</span>
+  </div>
+  <div class="container">
+    <h1>Attendance Management</h1>
+    <div class="form-group">
+      <label for="employeeSelect">Select Employee</label>
+      <select id="employeeSelect">
+        <option value="Danish Shaikh">Danish Shaikh</option>
+        <option value="Zahir Shaikh">Zahir Shaikh</option>
+        <option value="Mahesh Kadam">Mahesh Kadam</option>
+        <option value="Sandeep Singh">Sandeep Singh</option>
+        <option value="Ashutosh Singh">Ashutosh Singh</option>
+        <option value="Tanya Arora">Tanya Arora</option>
+        <option value="Samia Banu">Samia Banu</option>
+        <option value="Avanti Alhat">Avanti Alhat</option>
+        <option value="Leher Kayyath">Leher Kayyath</option>
+        <option value="Shoaib Sayyed">Shoaib Sayyed</option>
+        <option value="Sohel Shaikh">Sohel Shaikh</option>
+        <option value="Azhar Bagwan">Azhar Bagwan</option>
+        <option value="Mohammed Aatif">Mohammed Aatif</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="newEmployee">Add New Employee</label>
+      <input type="text" id="newEmployee" placeholder="Enter employee name">
+      <button onclick="addEmployee()" class="btn add-employee-btn">Add</button>
+    </div>
+    <div class="form-group attendance-buttons">
+      <button onclick="checkIn()">Check In</button>
+      <button onclick="checkOut()">Check Out</button>
+    </div>
+    <div class="form-group break-timings">
+      <input type="text" id="breakStart" placeholder="Break Start Time">
+      <input type="text" id="breakEnd" placeholder="Break End Time">
+      <button onclick="recordBreak()" class="btn">Record Break</button>
+    </div>
+    <div>
+      <h2>Attendance Records</h2>
+      <table id="attendanceTable">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Date</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Break Start</th>
+            <th>Break End</th>
+            <th>Total Hours</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button onclick="downloadCSV()" class="DIY">Download CSV Report</button>
+      <p>
+          ** Do Not Delete Any Record Of Attendence If You Have Not Downloaded It **
+      </p>
+    </div>
+  </div>
+  <script>
+    const modeToggle = document.getElementById('modeToggle');
+    const body = document.body;
+
+    modeToggle.addEventListener('change', () => {
+      body.classList.toggle('dark-mode');
+      saveModePreference(body.classList.contains('dark-mode'));
+    });
+
+    function saveModePreference(isDarkMode) {
+      localStorage.setItem('darkMode', isDarkMode);
+    }
+
+    function loadModePreference() {
+      const isDarkMode = localStorage.getItem('darkMode') === 'true';
+      if (isDarkMode) {
+        body.classList.add('dark-mode'); 
+        modeToggle.checked = true;
+      }
+    }
+
+    loadModePreference();
+
+    const attendanceTableBody = document.querySelector('#attendanceTable tbody');
+    const attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+
+    function checkIn() {
+      const date = new Date().toLocaleDateString();
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const employee = document.getElementById('employeeSelect').value;
+      const attendance = attendanceData.find(a => a.date === date && a.employee === employee) || { date, employee };
+      attendance.checkIn = time;
+      if (!attendanceData.some(a => a.date === date && a.employee === employee)) {
+        attendanceData.push(attendance);
+      }
+      renderAttendanceTable();
+      saveAttendanceData();
+    }
+
+    function checkOut() {
+      const date = new Date().toLocaleDateString();
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const employee = document.getElementById('employeeSelect').value;
+      const attendance = attendanceData.find(a => a.date === date && a.employee === employee) || { date, employee };
+      attendance.checkOut = time;
+      if (!attendanceData.some(a => a.date === date && a.employee === employee)) {
+        attendanceData.push(attendance);
+      }
+      renderAttendanceTable();
+      saveAttendanceData();
+    }
+
+    function recordBreak() {
+      const date = new Date().toLocaleDateString();
+      const breakStart = document.getElementById('breakStart').value;
+      const breakEnd = document.getElementById('breakEnd').value;
+      const employee = document.getElementById('employeeSelect').value;
+      const attendance = attendanceData.find(a => a.date === date && a.employee === employee) || { date, employee };
+      attendance.breakStart = breakStart;
+      attendance.breakEnd = breakEnd;
+      if (!attendanceData.some(a => a.date === date && a.employee === employee)) {
+        attendanceData.push(attendance);
+      }
+      renderAttendanceTable();
+      saveAttendanceData();
+    }
+
+    function renderAttendanceTable() {
+      attendanceTableBody.innerHTML = '';
+      attendanceData.forEach(function (attendance, index) {
+        const totalHours = calculateTotalHours(attendance);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${attendance.employee}</td>
+          <td>${attendance.date}</td>
+          <td><input type="time" value="${attendance.checkIn || ''}" onchange="updateCheckIn(${index}, this.value)"></td>
+          <td><input type="time" value="${attendance.checkOut || ''}" onchange="updateCheckOut(${index}, this.value)"></td>
+          <td>${attendance.breakStart || '-'}</td>
+          <td>${attendance.breakEnd || '-'}</td>
+          <td>${totalHours}</td>
+          <td><button class="delete-btn" onclick="deleteAttendanceEvent(${index})">Delete</button></td>
+        `;
+        attendanceTableBody.appendChild(row);
+      });
+    }
+
+    function updateCheckIn(index, value) {
+      attendanceData[index].checkIn = value;
+      renderAttendanceTable();
+      saveAttendanceData();
+    }
+
+    function updateCheckOut(index, value) {
+      attendanceData[index].checkOut = value;
+      renderAttendanceTable();
+      saveAttendanceData();
+    }
+
+    function calculateTotalHours(attendance) {
+      if (attendance.checkIn && attendance.checkOut) {
+        const checkInTime = new Date(`1970-01-01T${attendance.checkIn}:00`);
+        const checkOutTime = new Date(`1970-01-01T${attendance.checkOut}:00`);
+        let diff = (checkOutTime - checkInTime) / (1000 * 60 * 60); // difference in hours
+
+        if (attendance.breakStart && attendance.breakEnd) {
+          const breakStartTime = new Date(`1970-01-01T${attendance.breakStart}:00`);
+          const breakEndTime = new Date(`1970-01-01T${attendance.breakEnd}:00`);
+          const breakDiff = (breakEndTime - breakStartTime) / (1000 * 60 * 60); // difference in hours
+          diff -= breakDiff;
+        }
+
+        return diff.toFixed(2);
+      }
+      return '-';
+    }
+
+    function deleteAttendanceEvent(index) {
+      attendanceData.splice(index, 1);
+      renderAttendanceTable();
+      saveAttendanceData();
+    }
+
+    function saveAttendanceData() {
+      localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+    }
+
+    function downloadCSV() {
+      let csv = 'Employee,Date,Check In,Check Out,Break Start,Break End,Total Hours\n';
+      attendanceData.forEach(attendance => {
+        const totalHours = calculateTotalHours(attendance);
+        csv += `${attendance.employee},${attendance.date},${attendance.checkIn || '-'},${attendance.checkOut || '-'},${attendance.breakStart || '-'},${attendance.breakEnd || '-'},${totalHours}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'attendance_records.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function addEmployee() {
+      const newEmployeeInput = document.getElementById('newEmployee');
+      const newEmployee = newEmployeeInput.value.trim();
+      if (newEmployee) {
+        const employeeSelect = document.getElementById('employeeSelect');
+        const option = document.createElement('option');
+        option.value = newEmployee;
+        option.textContent = newEmployee;
+        employeeSelect.appendChild(option);
+        newEmployeeInput.value = '';
+      }
+    }
+
+    // Initialize the table on page load
+    renderAttendanceTable();
+  </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agents Dashboard</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://thetechmarketer.com/wp-content/uploads/2024/05/14979246_SL_060521_43530_02.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333; /* Changed text color for better readability */
+        }
+
+        .container {
+            max-width: 900px;
+            padding: 30px;
+            background-color: #fff; /* Changed to total white */
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #333; /* Changed heading color for better readability */
+        }
+
+        .agent {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .agent:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .agent img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .agent:hover img {
+            transform: scale(1.1);
+        }
+
+        .agent-details {
+            text-align: left;
+        }
+
+        .agent-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .agent-id, .agent-campaign {
+            color: #777; /* Changed text color for better readability */
+        }
+
+        .button-container {
+            margin-top: 50px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        #profile-image {
+            display: none;
+        }
+
+        select {
+            padding: 10px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin-right: 20px;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        select:focus {
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Agents Dashboard</h1>
+        
+        <div class="agent" id="agent1">
+            <img src="agent1.jpg" alt="Agent 1" id="agent1-photo">
+            <div class="agent-details">
+                <div class="agent-name">Leher</div>
+                <div class="agent-id">Employee ID: </div>
+                <div class="agent-campaign">Campaign: <span id="agent1-campaign"></span></div>
+            </div>
+        </div>
+        
+        <table>
+            <tr>
+                <th>Break</th>
+                <th>Actions</th>
+            </tr>
+            <tr>
+                <td>Break 1</td>
+                <td>
+                    <a href="https://192.168.0.10:444/login" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Break 2</td>
+                <td>
+                    <a href="https://192.168.0.10:444/login" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Break 3</td>
+                <td>
+                    <a href="https://192.168.0.10:444/login" class="button">Paste Lead</a>
+                    <a href="#" class="button">No Leads</a>
+                </td>
+            </tr>
+        </table>
+        
+        <div class="button-container">
+            <input type="file" accept="image/*" id="profile-image">
+            <button onclick="document.getElementById('profile-image').click();">Change Profile Photo</button>
+            <select id="campaign-dropdown">
+                <!-- Campaigns will be loaded dynamically from CRM1.html -->
+            </select>
+            <button onclick="assignCampaign('agent1')">Assign Campaign</button>
+        </div>
+    </div>
+
+    <script>
+        // Load campaign data from CRM1.html and populate the dropdown
+        window.addEventListener("load", function() {
+            var storedData = localStorage.getItem("campaignData");
+            var dataArray = storedData ? JSON.parse(storedData) : [];
+            var dropdown = document.getElementById("campaign-dropdown");
+            // Populate the dropdown with campaign names
+            dataArray.forEach(function(data) {
+                var option = document.createElement("option");
+                option.text = data.campaignName;
+                option.value = data.campaignName;
+                dropdown.add(option);
+            });
+        });
+
+        // Function to assign campaign to agent
+        function assignCampaign(agentId) {
+            var dropdown = document.getElementById("campaign-dropdown");
+            var selectedCampaign = dropdown.value;
+            document.getElementById(agentId + "-campaign").innerText = selectedCampaign;
+        }
+
+        // Function to handle profile photo change
+        document.getElementById("profile-image").addEventListener("change", function(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById("agent1-photo");
+                    img.src = e.target.result;
+                    // Save the image source to local storage
+                    localStorage.setItem("agent1Photo", e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Load the saved profile photo from local storage
+        var savedPhoto = localStorage.getItem("agent1Photo");
+        if (savedPhoto) {
+            document.getElementById("agent1-photo").src = savedPhoto;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wavegen Dynamics Payslip Generator</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url('https://thetechmarketer.com/wp-content/uploads/2024/05/bkg202.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #333; /* Dark text color */
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header img {
+            width: 500px; /* Set width to 500px */
+            height: 600px; /* Set height to 600px */
+            max-width: 100%;
+            height: auto;
+        }
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+        }
+        .menu-toggle .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            background-color: #333;
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-menu {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        .nav-links li {
+            margin-left: 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #FAD02C; /* Primary color */
+        }
+        h1 {
+            text-align: center;
+            color: #333; /* Dark text color */
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #38B6FF; /* Secondary color on focus */
+            box-shadow: 0 0 5px rgba(56, 182, 255, 0.5); /* Shadow on focus */
+        }
+        button {
+            background-color: #38B6FF; /* Secondary color */
+            color: #fff;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2c8be3; /* Darker shade of secondary color on hover */
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e2e2e2;
+            border-radius: 5px;
+        }
+        .payslip {
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                right: 20px;
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .menu-toggle.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .menu-toggle.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+            .menu-toggle.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+            .nav-links li {
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://thetechmarketer.com/wp-content/uploads/2024/05/dynamic-wavegen-e1715080676813.jpg" alt="Wavegen Dynamics Logo">
+        </header>
+
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+        <nav class="nav-menu">
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Dynamic HR</a></li>
+                <li><a href="#">Sign Out</a></li>
+            </ul>
+        </nav>
+
+        <h1>Wavegen Dynamics<br> Payslip Generator</h1>
+
+        <label for="name">Employee Name:</label>
+        <input type="text" id="name" placeholder="Enter employee's name">
+        
+        <label for="id">Employee ID:</label>
+        <input type="text" id="id" placeholder="Enter employee's ID">
+        
+        <label for="department">Employee Department:</label>
+        <select id="department">
+            <option value="HR">HR</option>
+            <option value="Digitalmarketing">Digitalmarketing</option>
+            <option value="Telemarketing">Telemarketing</option>
+            <option value="Sales">Sales</option>
+            <option value="IT">IT</option>
+            <option value="Finance">Finance</option>
+        </select>
+        
+        <label for="targets">Targets Achieved (optional):</label>
+        <input type="number" id="targets" placeholder="Enter targets achieved">
+        
+        <label for="salary">Enter Salary:</label>
+        <input type="number" id="salary" placeholder="Enter employee's salary">
+        
+        <button onclick="generatePayslip()">Generate Payslip</button>
+        
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        async function generatePayslip() {
+            const name = document.getElementById('name').value;
+            const id = document.getElementById('id').value;
+            const department = document.getElementById('department').value;
+            const targets = parseInt(document.getElementById('targets').value) || 0;
+            const salary = parseFloat(document.getElementById('salary').value);
+
+            if (!name || !id || isNaN(salary) || salary <= 0) {
+                alert('Please enter valid details');
+                return;
+            }
+
+            const portions = [
+                { name: 'Basic + DA', percentage: 30, value: salary * 0.3 },
+                { name: 'House Rent Allowance', percentage: 20, value: salary * 0.2 },
+                { name: 'Leave Travel Allowance', percentage: 20, value: salary * 0.2 },
+                { name: 'Transport Allowance', percentage: 10, value: salary * 0.1 },
+                { name: 'Medical Allowance', percentage: 10, value: salary * 0.1 },
+                { name: 'Other Allowance', percentage: 10, value: salary * 0.1 },
+            ];
+
+            const totalPortion = portions.reduce((sum, portion) => sum + portion.value, 0);
+            const deduction = 200;
+            const inHandSalary = totalPortion - deduction;
+
+            let performance = 'down';
+            if (targets >= 15) {
+                performance = 'max';
+            }
+
+            const payslipHTML = `
+                <div class="payslip" id="payslip">
+                    <img src="https://marketwavegen.com/wp-content/uploads/2023/12/logo-main70h.png" style="display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px;">
+                    <h2 style="text-align: center;">Market Wavegen OPC Private Limited</h2>
+                    <p style="text-align: center;">CIN: U74999PN2021OPC202988</p>
+                    <p style="text-align: center;">Office No. 1-BB Cerebrum IT Park, Kalyani Nagar, Pune 411014, Maharashtra, India</p>
+                    <h3 style="text-align: center;">Payslip</h3>
+                    <p><strong>Employee Name:</strong> ${name}</p>
+                    <p><strong>Employee ID:</strong> ${id}</p>
+                    <p><strong>Department:</strong> ${department}</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Amount</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${portions.map(portion => `
+                                <tr>
+                                    <td>${portion.name}</td>
+                                    <td>${portion.value.toFixed(2)}</td>
+                                    <td>${portion.percentage}%</td>
+                                </tr>
+                            `).join('')}
+                            <tr>
+                                <td><strong>Total CTC (A)</strong></td>
+                                <td><strong>${totalPortion.toFixed(2)}</strong></td>
+                                <td><strong>100%</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Deductions (B)</td>
+                                <td>${deduction.toFixed(2)}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Profession Tax</td>
+                                <td>${deduction.toFixed(2)}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><strong>In Hand (A+B)</strong></td>
+                                <td><strong>${inHandSalary.toFixed(2)}</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button onclick="downloadHTML('${name}')">Download Payslip</button>
+                <p><strong>Employee Performance:</strong> The employee performance is ${performance}</p>
+            `;
+
+            document.getElementById('result').innerHTML = payslipHTML;
+        }
+
+        async function downloadHTML(name) {
+            const payslip = document.getElementById('payslip').outerHTML;
+            const blob = new Blob([payslip], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `${name}-payslip-marketwavegen.html`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('mobile-menu');
+            const navMenu = document.querySelector('.nav-menu');
+
+            menuToggle.addEventListener('click', function() {
+                menuToggle.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
+    

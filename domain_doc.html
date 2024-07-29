@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Health Check</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url("https://thetechmarketer.com/wp-content/uploads/2024/05/112.jpg") no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: transparent;
+            border: 2px solid rgba(255, 255, 255, .2);
+            backdrop-filter: blur(9px);
+            color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, .2);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: transparent;
+            color: #fff;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Domain Health Check</h1>
+        <form id="addDomainForm">
+            <label for="newDomain">Add Domain:</label>
+            <input type="text" id="newDomain" name="newDomain" placeholder="example.com" required>
+            <input type="submit" value="Add Domain">
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Domain</th>
+                    <th>Health</th>
+                    <th>Credibility Score</th>
+                </tr>
+            </thead>
+            <tbody id="resultsTableBody">
+                <!-- Results will be appended here -->
+            </tbody>
+        </table>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        const predefinedDomains = ['ansglobalservices.com','mantechmark.com','marketernews.tech','marketwavegen.com','marketwavegen.info',
+                                    'mwgworld.com','mwgworld.us','techmediamessenger.com','thetechmarketerec.com','ttmpoc.online']; // Add more predefined domains here
+        let allDomains = [...predefinedDomains]; // Initialize with predefined domains
+
+        function checkDomains() {
+            const resultsTableBody = document.getElementById('resultsTableBody');
+            resultsTableBody.innerHTML = ''; // Clear previous results
+
+            allDomains.forEach(domain => {
+                console.log(`Checking domain: ${domain}`); // Debugging log
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'check_domain.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        try {
+                            const result = JSON.parse(xhr.responseText);
+                            console.log(`Response for ${domain}:`, result); // Debugging log
+                            const row = document.createElement('tr');
+                            row.innerHTML = `<td>${result.domain}</td><td>${result.health}</td><td>${result.credibility_score}</td>`;
+                            resultsTableBody.appendChild(row);
+                        } catch (error) {
+                            console.error(`Error parsing response for ${domain}:`, xhr.responseText); // Debugging log
+                        }
+                    } else {
+                        console.error(`Failed to check domain: ${domain}, status: ${xhr.status}`); // Debugging log
+                    }
+                };
+                xhr.onerror = function() {
+                    console.error(`Error while checking domain: ${domain}`); // Debugging log
+                };
+                xhr.send('domain=' + encodeURIComponent(domain));
+            });
+        }
+
+        document.getElementById('addDomainForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newDomain = document.getElementById('newDomain').value;
+            if (newDomain && !allDomains.includes(newDomain)) {
+                console.log(`Adding new domain: ${newDomain}`); // Debugging log
+                allDomains.push(newDomain);
+                checkDomains();
+            } else {
+                console.warn(`Domain already exists or is invalid: ${newDomain}`); // Debugging log
+            }
+            document.getElementById('newDomain').value = ''; // Clear the input field
+        });
+
+        window.onload = checkDomains;
+        setInterval(checkDomains, 7 * 60 * 60 * 1000); // Check every 7 hours
+    </script>
+</body>
+</html>

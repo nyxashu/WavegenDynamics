@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Performance Calculator</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #38B6FF;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 16px;
+            background-color: #38B6FF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+        button:hover {
+            background-color: #2c8be3;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e2e2e2;
+            border-radius: 5px;
+            animation: slideDown 0.5s ease-in-out;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .employee-form {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .employee-result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Employee Performance Calculator</h1>
+        </header>
+        
+        <label for="campaignName">Campaign Name:</label>
+        <input type="text" id="campaignName" placeholder="Enter campaign name">
+
+        <label for="cpl">Cost Per Lead (CPL):</label>
+        <input type="number" id="cpl" placeholder="Enter cost per lead">
+
+        <label for="ctc">CTC of Employee:</label>
+        <input type="number" id="ctc" placeholder="Enter CTC of employee">
+
+        <div id="employees-container">
+            <div class="employee-form" id="employee-0">
+                <label for="employeeName-0">Employee Name:</label>
+                <input type="text" id="employeeName-0" placeholder="Enter employee name">
+        
+                <label for="employeeId-0">Employee ID:</label>
+                <input type="text" id="employeeId-0" placeholder="Enter employee ID">
+        
+                <label for="leadsScored-0">Leads Scored (Client Accepted):</label>
+                <input type="number" id="leadsScored-0" placeholder="Enter leads scored">
+            </div>
+        </div>
+        
+        <button onclick="addEmployeeForm()">Add Another Employee</button>
+        <button onclick="calculatePerformance()">Calculate Performance</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        let employeeCount = 1;
+
+        function addEmployeeForm() {
+            const employeesContainer = document.getElementById('employees-container');
+            const newEmployeeForm = document.createElement('div');
+            newEmployeeForm.classList.add('employee-form');
+            newEmployeeForm.id = `employee-${employeeCount}`;
+            newEmployeeForm.innerHTML = `
+                <label for="employeeName-${employeeCount}">Employee Name:</label>
+                <input type="text" id="employeeName-${employeeCount}" placeholder="Enter employee name">
+        
+                <label for="employeeId-${employeeCount}">Employee ID:</label>
+                <input type="text" id="employeeId-${employeeCount}" placeholder="Enter employee ID">
+        
+                <label for="leadsScored-${employeeCount}">Leads Scored (Client Accepted):</label>
+                <input type="number" id="leadsScored-${employeeCount}" placeholder="Enter leads scored">
+            `;
+            employeesContainer.appendChild(newEmployeeForm);
+            employeeCount++;
+        }
+
+        function calculatePerformance() {
+            const cpl = parseFloat(document.getElementById('cpl').value);
+            const ctc = parseFloat(document.getElementById('ctc').value);
+            const campaignName = document.getElementById('campaignName').value;
+            
+            if (isNaN(cpl) || isNaN(ctc) || !campaignName) {
+                alert('Please enter valid campaign details');
+                return;
+            }
+
+            let resultHTML = `<p><strong>Campaign Name:</strong> ${campaignName}</p>`;
+            for (let i = 0; i < employeeCount; i++) {
+                const employeeName = document.getElementById(`employeeName-${i}`).value;
+                const employeeId = document.getElementById(`employeeId-${i}`).value;
+                const leadsScored = parseInt(document.getElementById(`leadsScored-${i}`).value);
+                
+                if (!employeeName || !employeeId || isNaNaN(leadsScored)) {
+                    alert('Please enter valid employee details');
+                    return;
+                }
+
+                const revenueGenerated = cpl * leadsScored;
+                const ctc_2_5 = ctc * 2.5;
+                const ctc_1_75 = ctc * 1.75;
+                const averageLeadsPerDay = leadsScored / 23;
+                const averageRevenuePerDay = revenueGenerated / 23;
+                let performance = 'average';
+
+                if (revenueGenerated > ctc_2_5) {
+                    performance = 'excellent';
+                } else if (revenueGenerated >= ctc_1_75) {
+                    performance = 'good';
+                }
+
+                resultHTML += `
+                    <div class="employee-result">
+                        <p><strong>Employee Name:</strong> ${employeeName}</p>
+                        <p><strong>Employee ID:</strong> ${employeeId}</p>
+                        <p><strong>Revenue Generated:</strong> ${revenueGenerated.toFixed(2)}</p>
+                        <p><strong>Average Leads per Day:</strong> ${averageLeadsPerDay.toFixed(2)}</p>
+                        <p><strong>Average Revenue per Day:</strong> ${averageRevenuePerDay.toFixed(2)}</p>
+                        <p><strong>Performance:</strong> ${performance}</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+    </script>
+</body>
+</html>

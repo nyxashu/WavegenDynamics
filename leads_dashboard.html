@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://thetechmarketer.com/wp-content/uploads/2024/05/bkg202.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .site-logo {
+            display: block;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 30%;
+            width: 100%;
+        }
+        .h1{
+            text-align:center;
+            color: white;
+        }
+        .leaderboard {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .leaderboard h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: white;
+        }
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 10px;
+            animation: fadeIn 1s;
+        }
+        .campaign-dropdown {
+            width: 200px;
+            animation: slideDown 1.5s;
+        }
+        .representative {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: slideUp 1s;
+        }
+        .representative:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .representative-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .representative-id {
+            margin-right: 10px;
+            color: #666;
+        }
+        .representative-leads-container {
+            display: flex;
+            align-items: center;
+        }
+        .representative-leads-label {
+            margin-right: 5px;
+            color: #666;
+        }   
+        .representative-leads {
+            margin-right: 10px;
+            border: none;
+            background-color: transparent;
+            font-size: inherit;
+            font-family: inherit;
+            cursor: pointer;
+            color: #333;
+        }
+        .representative-leads:focus {
+            outline: none;
+        }
+        .add-representative-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .add-representative-btn:hover {
+            background-color: #45a049;
+        }
+        .dashboard-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .dashboard-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .download-report-btn,
+        .allocate-campaign-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .download-report-btn:hover,
+        .allocate-campaign-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        /* Style for the delete button */
+        .delete-representative-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .delete-representative-btn:hover {
+            background-color: #d32f2f;
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.5s;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: none;
+            width: 80%;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.5s;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .close:hover,
+        .close:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-content .agent-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .modal-content .agent-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .popup {
+    --burger-line-width: 1.125em;
+    --burger-line-height: 0.125em;
+    --burger-offset: 0.625em;
+    --burger-bg: #FAD02C; /* Update burger button background color */
+    --burger-color: #333;
+    --burger-line-border-radius: 0.1875em;
+    --burger-diameter: 3.125em;
+    --burger-btn-border-radius: calc(var(--burger-diameter) / 2);
+    --burger-line-transition: 0.3s;
+    --burger-transition: all 0.1s ease-in-out;
+    --burger-hover-scale: 1.1;
+    --burger-active-scale: 0.95;
+    --burger-enable-outline-color: var(--burger-bg);
+    --burger-enable-outline-width: 0.125em;
+    --burger-enable-outline-offset: var(--burger-enable-outline-width);
+    /* nav */
+    --nav-padding-x: 0.25em;
+    --nav-padding-y: 0.625em;
+    --nav-border-radius: 0.375em;
+    --nav-border-color: transparent; /* Remove border color */
+    --nav-border-width: 0.0625em;
+    --nav-shadow-color: rgba(0, 0, 0, 0.2);
+    --nav-shadow-width: 0 1px 5px;
+    --nav-bg: #38B6FF; /* Update background color of the dropdown */
+    --nav-font-family: "Poppins", sans-serif;
+    --nav-default-scale: 0.8;
+    --nav-active-scale: 1;
+    --nav-position-left: 0;
+    --nav-position-right: unset;
+    /* title */
+    --nav-title-size: 0.625em;
+    --nav-title-color: #fff; /* White color for title */
+    --nav-title-padding-x: 1rem;
+    --nav-title-padding-y: 0.25em;
+    /* nav button */
+    --nav-button-padding-x: 1rem;
+    --nav-button-padding-y: 0.375em;
+    --nav-button-border-radius: 0.375em;
+    --nav-button-font-size: 17px;
+    --nav-button-hover-bg: #FAD02C; /* Update hover background color for links */
+    --nav-button-hover-text-color: #333; /* Update hover text color for links */
+    --nav-button-distance: 0.875em;
+    /* underline */
+    --underline-border-width: 0.0625em;
+    --underline-border-color: #ccc;
+    --underline-margin-y: 0.3125em;
+  }
+
+  /* popup settings */
+  .popup {
+    display: inline-block;
+    text-rendering: optimizeLegibility;
+    position: relative;
+  }
+
+  .popup input {
+    display: none;
+  }
+
+  .burger {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    background: var(--burger-bg);
+    width: var(--burger-diameter);
+    height: var(--burger-diameter);
+    border-radius: var(--burger-btn-border-radius);
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition: var(--burger-transition);
+    outline: var(--burger-enable-outline-width) solid transparent;
+    outline-offset: 0;
+  }
+
+  .popup-window {
+    transform: scale(var(--nav-default-scale));
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    padding: var(--nav-padding-y) var(--nav-padding-x);
+    background: var(--nav-bg);
+    font-family: var(--nav-font-family);
+    color: #fff; /* White text color */
+    border-radius: var(--nav-border-radius);
+    box-shadow: var(--nav-shadow-width) var(--nav-shadow-color);
+    border: var(--nav-border-width) solid var(--nav-border-color);
+    top: calc(var(--burger-diameter) + var(--burger-enable-outline-width) + var(--burger-enable-outline-offset));
+    left: var(--nav-position-left);
+    right: var(--nav-position-right);
+    transition: var(--burger-transition);
+    margin-top: 10px;
+  }
+
+  .popup-window legend {
+    padding: var(--nav-title-padding-y) var(--nav-title-padding-x);
+    margin: 0;
+    color: var(--nav-title-color); /* Use variable if specific color needed */
+    font-size: var(--nav-title-size);
+    text-transform: uppercase;
+  }
+
+  .popup-window ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  .popup-window ul a {
+    text-decoration: none; /* Remove underline */
+    color: #fff; /* White text color */
+    display: flex;
+    align-items: center;
+    padding: var(--nav-button-padding-y) var(--nav-button-padding-x);
+    font-size: var(--nav-button-font-size);
+    border-radius: var(--nav-button-border-radius);
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .popup-window ul a svg {
+    margin-right: 8px; /* Adjust spacing between icon and text */
+  }
+
+  .popup-window ul a:hover,
+  .popup-window ul a:focus {
+    background-color: var(--nav-button-hover-bg); /* Apply hover background color */
+    color: var(--nav-button-hover-text-color); /* Apply hover text color */
+  }
+
+  .popup-window hr {
+    margin: var(--underline-margin-y) 0;
+    border: none;
+    border-bottom: var(--underline-border-width) solid var(--underline-border-color);
+  }
+
+  /* actions */
+  .burger:hover {
+    transform: scale(var(--burger-hover-scale));
+  }
+
+  .burger:active {
+    transform: scale(var(--burger-active-scale));
+  }
+
+  .burger:focus:not(:hover) {
+    outline-color: var(--burger-enable-outline-color);
+    outline-offset: var(--burger-enable-outline-offset);
+  }
+
+  .popup input:checked + .burger span:nth-child(1) {
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .popup input:checked + .burger span:nth-child(2) {
+    bottom: 50%;
+    transform: translateY(50%) rotate(-45deg);
+  }
+
+  .popup input:checked + .burger span:nth-child(3) {
+    transform: translateX(calc(var(--burger-diameter) * -1 - var(--burger-line-width)));
+  }
+
+  .popup input:checked ~ nav {
+    transform: scale(var(--nav-active-scale));
+    visibility: visible;
+    opacity: 1;
+  }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://thetechmarketer.com/wp-content/uploads/2024/05/dynamic-wavegen-e1715080676813.jpg" alt="Site Logo" class="site-logo">
+    </div>
+    <div class="leaderboard">
+        <h1>Leads Dashboard</h1>
+        <label class="popup">
+    <input type="checkbox" />
+    <div tabindex="0" class="burger">
+      <svg viewBox="0 0 24 24" fill="white" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2c2.757 0 5 2.243 5 5.001 0 2.756-2.243 5-5 5s-5-2.244-5-5c0-2.758 2.243-5.001 5-5.001zm0-2c-3.866 0-7 3.134-7 7.001 0 3.865 3.134 7 7 7s7-3.135 7-7c0-3.867-3.134-7.001-7-7.001zm6.369 13.353c-.497.498-1.057.931-1.658 1.302 2.872 1.874 4.378 5.083 4.972 7.346h-19.387c.572-2.29 2.058-5.503 4.973-7.358-.603-.374-1.162-.811-1.658-1.312-4.258 3.072-5.611 8.506-5.611 10.669h24c0-2.142-1.44-7.557-5.631-10.647z"></path>
+      </svg>
+    </div>
+    <nav class="popup-window">
+      <legend>Quick Links</legend>
+      <ul>
+         <li>
+          <a href="https://wavegendynamics.online/wannabeindex.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 4v6.406l-3.753 3.741-6.463-6.462 3.7-3.685h6.516zm2-2h-12.388l1.497 1.5-4.171 4.167 9.291 9.291 4.161-4.193 1.61 1.623v-12.388zm-5 4c.552 0 1 .449 1 1s-.448 1-1 1-1-.449-1-1 .448-1 1-1zm0-1c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6.708.292l-.708.708v3.097l2-2.065-1.292-1.74zm-12.675 9.294l-1.414 1.414h-2.619v2h-2v2h-2v-2.17l5.636-5.626-1.417-1.407-6.219 6.203v5h6v-2h2v-2h2l1.729-1.729-1.696-1.685z"></path>
+            </svg>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://wavegendynamics.online/dynamichr.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 4v6.406l-3.753 3.741-6.463-6.462 3.7-3.685h6.516zm2-2h-12.388l1.497 1.5-4.171 4.167 9.291 9.291 4.161-4.193 1.61 1.623v-12.388zm-5 4c.552 0 1 .449 1 1s-.448 1-1 1-1-.449-1-1 .448-1 1-1zm0-1c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6.708.292l-.708.708v3.097l2-2.065-1.292-1.74zm-12.675 9.294l-1.414 1.414h-2.619v2h-2v2h-2v-2.17l5.636-5.626-1.417-1.407-6.219 6.203v5h6v-2h2v-2h2l1.729-1.729-1.696-1.685z"></path>
+            </svg>
+            <span>Dynamic HR</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://wavegendynamics.online/leads_dashboard.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 4v6.406l-3.753 3.741-6.463-6.462 3.7-3.685h6.516zm2-2h-12.388l1.497 1.5-4.171 4.167 9.291 9.291 4.161-4.193 1.61 1.623v-12.388zm-5 4c.552 0 1 .449 1 1s-.448 1-1 1-1-.449-1-1 .448-1 1-1zm0-1c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6.708.292l-.708.708v3.097l2-2.065-1.292-1.74zm-12.675 9.294l-1.414 1.414h-2.619v2h-2v2h-2v-2.17l5.636-5.626-1.417-1.407-6.219 6.203v5h6v-2h2v-2h2l1.729-1.729-1.696-1.685z"></path>
+            </svg>
+            <span>Manager's Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://wavegendynamics.online/delivery_dashboard.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 4v6.406l-3.753 3.741-6.463-6.462 3.7-3.685h6.516zm2-2h-12.388l1.497 1.5-4.171 4.167 9.291 9.291 4.161-4.193 1.61 1.623v-12.388zm-5 4c.552 0 1 .449 1 1s-.448 1-1 1-1-.449-1-1 .448-1 1-1zm0-1c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6.708.292l-.708.708v3.097l2-2.065-1.292-1.74zm-12.675 9.294l-1.414 1.414h-2.619v2h-2v2h-2v-2.17l5.636-5.626-1.417-1.407-6.219 6.203v5h6v-2h2v-2h2l1.729-1.729-1.696-1.685z"></path>
+            </svg>
+            <span>Quality Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://wavegendynamics.online">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.598 9h-1.055c1.482-4.638 5.83-8 10.957-8 6.347 0 11.5 5.153 11.5 11.5s-5.153 11.5-11.5 11.5c-5.127 0-9.475-3.362-10.957-8h1.055c1.443 4.076 5.334 7 9.902 7 5.795 0 10.5-4.705 10.5-10.5s-4.705-10.5-10.5-10.5c-4.568 0-8.459 2.923-9.902 7zm12.228 3l-4.604-3.747.666-.753 6.112 5-6.101 5-.679-.737 4.608-3.763h-14.828v-1h14.826z"></path>
+            </svg>
+            <span>Sign Out</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </label>
+        <div class="leaderboard-header">
+            <select class="campaign-dropdown">
+                <option value="">Select campaign name</option>
+            </select>
+        </div>
+        <div id="representatives-container">
+            <!-- Add more representatives here -->
+        </div>
+        <button class="add-representative-btn" onclick="addRepresentative()">Add Representative</button>
+        <button class="allocate-campaign-btn" id="allocate-campaign-btn">Allocate Campaigns</button>
+        <button class="download-report-btn">Download Report</button>
+        <a href="https://192.168.0.10:444/login" class="dashboard-button">View Leads</a>
+    </div>
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Allocate Campaign</h2>
+            <div class="input-group">
+                <label for="from-date">From Date:</label>
+                <input type="date" id="from-date">
+            </div>
+            <div class="input-group">
+                <label for="to-date">To Date:</label>
+                <input type="date" id="to-date">
+            </div>
+            <div class="input-group">
+                <label for="agent-dropdown">Select Agent:</label>
+                <select id="agent-dropdown">
+                    <option value="Agent01">Agent 01</option>
+                    <option value="Agent02">Agent 02</option>
+                    <option value="Agent03">Agent 03</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="campaign-dropdown">Select Campaign:</label>
+                <select id="campaign-dropdown">
+                    <!-- Populate options dynamically using JavaScript -->
+                </select>
+            </div>
+            <button class="agent-button" onclick="allocateCampaign()">Allocate</button>
+        </div>
+    </div>
+
+    <script>
+        function addRepresentative() {
+            var representativeName = prompt("Enter representative's name:");
+            var campaignName = document.querySelector('.campaign-dropdown').value;
+            if (representativeName && campaignName) {
+                var representativesContainer = document.getElementById("representatives-container");
+                var newRepresentative = document.createElement("div");
+                newRepresentative.classList.add("representative");
+                newRepresentative.innerHTML = '<span class="representative-name">' + representativeName + '</span>' +
+                    '<span class="representative-id">Campaign ID: ' + campaignName + '</span>' +
+                    '<div class="representative-leads-container">' +
+                    '<span class="representative-leads-label">Leads:</span>' +
+                    '<span class="representative-leads" contenteditable="true">0</span>' +
+                    '</div>' +
+                    '<button class="delete-representative-btn">Delete</button>';
+                representativesContainer.appendChild(newRepresentative);
+            } else {
+                alert("Representative's name and campaign name are required.");
+            }
+        }
+
+        function deleteRepresentative(event) {
+            var representative = event.target.closest('.representative');
+            if (representative) {
+                representative.remove();
+            }
+        }
+
+        function downloadReport() {
+            var representatives = document.querySelectorAll('.representative');
+            var data = [['Representative Name', 'Campaign ID', 'Leads']];
+            representatives.forEach(function(representative) {
+                var name = representative.querySelector('.representative-name').textContent;
+                var campaignID = representative.querySelector('.representative-id').textContent.split(':')[1].trim();
+                var leads = representative.querySelector('.representative-leads').textContent.trim();
+                data.push([name, campaignID, leads]);
+            });
+
+            var csvContent = "data:text/csv;charset=utf-8,";
+            data.forEach(function(rowArray) {
+                var row = rowArray.join(",");
+                csvContent += row + "\r\n";
+            });
+
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "report.csv");
+            document.body.appendChild(link);
+            link.click();
+        }
+
+        function openModal() {
+            document.getElementById('myModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = "none";
+        }
+
+        document.querySelector(".modal .close").addEventListener("click", closeModal);
+
+        document.getElementById("allocate-campaign-btn").addEventListener("click", openModal);
+
+        window.addEventListener("click", function(event) {
+            var modal = document.getElementById('myModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        });
+
+        function allocateCampaign() {
+            var agentName = document.getElementById("agent-dropdown").value;
+            var campaignName = document.getElementById("campaign-dropdown").value;
+            if (agentName && campaignName) {
+                var representativesContainer = document.getElementById("representatives-container");
+                var newRepresentative = document.createElement("div");
+                newRepresentative.classList.add("representative");
+                newRepresentative.innerHTML = '<span class="representative-name">' + agentName + '</span>' +
+                    '<span class="representative-id">Campaign ID: ' + campaignName + '</span>' +
+                    '<div class="representative-leads-container">' +
+                    '<span class="representative-leads-label">Leads:</span>' +
+                    '<span class="representative-leads" contenteditable="true">0</span>' +
+                    '</div>' +
+                    '<button class="delete-representative-btn">Delete</button>';
+                representativesContainer.appendChild(newRepresentative);
+                closeModal();
+            } else {
+                alert("Please select an agent and a campaign.");
+            }
+        }
+
+        function populateCampaignDropdown() {
+            var dropdown = document.getElementById("campaign-dropdown");
+            var storedData = localStorage.getItem("campaignData");
+            var dataArray = storedData ? JSON.parse(storedData) : [];
+            dropdown.innerHTML = ""; // Clear existing options
+            dataArray.forEach(function(data) {
+                var option = document.createElement("option");
+                option.text = data.campaignName;
+                option.value = data.campaignName;
+                dropdown.add(option);
+            });
+        }
+
+        window.addEventListener("load", function() {
+            // Populate campaign dropdown
+            populateCampaignDropdown();
+
+            // Add event listeners for delete and download report buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('delete-representative-btn')) {
+                    deleteRepresentative(e);
+                } else if (e.target.classList.contains('download-report-btn')) {
+                    downloadReport();
+                }
+            });
+        });
+
+        window.addEventListener("load", function() {
+            var storedData = localStorage.getItem("campaignData");
+            var dataArray = storedData ? JSON.parse(storedData) : [];
+            var dropdown = document.querySelector('.campaign-dropdown');
+            dataArray.forEach(function(data) {
+                updateCampaignDropdown(data.campaignName);
+            });
+        });
+
+        function updateCampaignDropdown(newCampaignName) {
+            var dropdown = document.querySelector('.campaign-dropdown');
+            var option = document.createElement('option');
+            option.text = newCampaignName;
+            option.value = newCampaignName;
+            dropdown.add(option);
+            dropdown.value = newCampaignName;
+        }
+    </script>
+</body>
+</html>
+
+
+
